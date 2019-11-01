@@ -145,6 +145,8 @@ def printSTP():
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
+    parser.add_argument("-c","--controller", help="sdn controller ip [127.0.0.1]", default="127.0.0.1")
+    parser.add_argument("-p","--port", type=int, help="sdn controller port [6633]", default=6633)
     group=parser.add_mutually_exclusive_group()
     group.add_argument("-s", "--sdn", action='store_true', help="enable SDN mode (the default)")
     group.add_argument("-n", "--normal", action='store_true', help="enable STP mode (not the default)")
@@ -164,7 +166,7 @@ if __name__ == '__main__':
                    link=TCLink,
                    controller=None)
     if args.sdn :
-        net.addController( 'c0', controller=RemoteController, ip='127.0.0.1', port=6633 )
+        net.addController( 'c0', controller=RemoteController, ip=args.controller, port=args.port )
 
     net.start()
     s1=net.getNodeByName('s1')
