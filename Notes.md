@@ -4,6 +4,35 @@ Various notes on installation and configuration
 Useful ONOS information
 -----------------------
 
+``` bash
+cloc
+--------------------------------------------------------------------------------
+Language                      files          blank        comment           code
+--------------------------------------------------------------------------------
+Java                           9103         166144         376389         766554
+JSON                            852            190              0         188466
+JavaScript                      265           9965          11363          45458
+TypeScript                      248           2765           6056          17325
+XML                             244           1647           3700          14597
+CSS                             174           1800           3192           9762
+Python                           91           2102           1604           9049
+HTML                            169            505           1397           5477
+Bourne Again Shell              188           1428           1198           5095
+Markdown                         95           1551              0           4624
+Bourne Shell                     37            495            390           1981
+Maven                            22            177            384           1473
+YAML                             25            108             80            934
+Protocol Buffers                 55            196            985            734
+Dockerfile                        1             13             21             48
+make                              3             13              0             39
+C Shell                           1              4             10             27
+zsh                               1              2              4              5
+--------------------------------------------------------------------------------
+SUM:                          11574         189105         406773        1071648
+--------------------------------------------------------------------------------
+```
+
+
 Pica8 QoS config
 -----
 [Pica8 QOs configuration guide](https://docs.pica8.com/display/PicOS211sp/Configuring+QoS+scheduler)
