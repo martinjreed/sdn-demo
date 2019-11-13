@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Name=Run SDN network
+Comment=Run SDN network
+Exec=lxterminal -t "SDN scneario: test-network.py -s" -e 'cd demo;sudo /home/sdn/demo/test-network.py -s;$SHELL'
+Icon=utilities-terminal
+Terminal=true 
+Type=Application
+Categories=Application;
+

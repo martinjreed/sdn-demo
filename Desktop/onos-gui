@@ -1,0 +1,9 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=ONOS GUI
+GenericName=none
+Comment=none
+Exec=firefox http://localhost:8181/onos/ui
+Icon=/usr/share/icons/lubuntu/apps/22/google-chrome.svg
+Type=Application
+Categories=

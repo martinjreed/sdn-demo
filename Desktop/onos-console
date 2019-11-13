@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Name=Onos Console
+Comment=Onos Console for interacting with Onos
+Exec=lxterminal -t "Onos Shell" -e 'cd bin;sudo /home/sdn/demo/onos-shell -n;$SHELL'
+Icon=utilities-terminal
+Terminal=true
+Type=Application
+Categories=Application;
+

@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Name=Test STP Scenario
+Comment=Test STP Scenario
+Exec=lxterminal -t "STP scneario: test-network.py -n -t" -e 'cd demo;sudo /home/sdn/demo/test-network.py -n -t;$SHELL'
+Icon=utilities-terminal
+Terminal=true 
+Type=Application
+Categories=Application;
+

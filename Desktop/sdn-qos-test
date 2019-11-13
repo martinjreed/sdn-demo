@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Name=Test SDN with QoS
+Comment=Test SDN scenario with QoS
+Exec=lxterminal -t "SDN scneario with QoS: test-network.py -q -s -t" -e 'cd demo;sudo /home/sdn/demo/test-network.py -q -s -t;$SHELL'
+Icon=utilities-terminal
+Terminal=true 
+Type=Application
+Categories=Application;
+

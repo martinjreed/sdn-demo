@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Name=Run Onos server
+Comment=Run Onos server
+Exec=lxterminal -t 'Onos server' -e 'cd onos;bazel run onos-local;$SHELL'
+Icon=utilities-terminal
+Terminal=true 
+Type=Application
+Categories=Application;
+

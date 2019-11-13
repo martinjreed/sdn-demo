@@ -1,0 +1,7 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=LXTerminal
+Icon=lxterminal
+Exec=lxterminal
+Categories=Application;
