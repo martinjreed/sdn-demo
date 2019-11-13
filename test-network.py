@@ -27,7 +27,7 @@ from sys import argv
 
 class SquareTopo(Topo):
     "Square switch topology with five hosts"
-    def __init__(self, externalqos, **opts):
+    def __init__(self, qos, **opts):
         Topo.__init__(self, **opts)
         switch1 = self.addSwitch('s1', cls=OVSSwitch, failMode="standalone")
         switch2 = self.addSwitch('s2', cls=OVSSwitch, failMode="standalone")
@@ -39,7 +39,7 @@ class SquareTopo(Topo):
         host4 = self.addHost("h4", mac='0a:00:00:00:00:04')
         host5 = self.addHost("h5", mac='0a:00:00:00:00:05')
 
-        if externalqos == False:
+        if qos == False:
             #note in the code HTB seems to be the default but does not work well
             # spent some time trying out these. In practice it may depend upon the TC values
             # put in by mininet/mininet/link.py so this may vary from kernel to kernel
@@ -89,7 +89,7 @@ class SquareTopo(Topo):
             # one is an odd one out in port 4
             self.addLink(switch1,host5)
         
-    def afterStartConfig(self, net, sdn, externalqos):
+    def afterStartConfig(self, net, sdn, qos):
         """configuration to topo that needs doing after starting"""
         s1=net.getNodeByName('s1')
         s2=net.getNodeByName('s2')
@@ -106,7 +106,7 @@ class SquareTopo(Topo):
             s1.cmd("ovs-vsctl set Bridge s1 rstp_enable=true")
             s2.cmd("ovs-vsctl set Bridge s2 rstp_enable=true")
             
-        if externalqos == True:
+        if qos == True:
             setTCcmd=os.path.dirname(os.path.realpath(__file__))+"/set-qos.sh"
             # get the list of interfaces that are between switches only (ie ignore lo and host interfaces)
             tcInterfaces = ''
@@ -281,7 +281,7 @@ if __name__ == '__main__':
     parser.add_argument("-c","--controller", help="sdn controller ip [127.0.0.1]", default="127.0.0.1")
     parser.add_argument("-p","--port", type=int, help="sdn controller port [6633]", default=6633)
     parser.add_argument("-t","--tests", action='store_true', help="run tests automatically")
-    parser.add_argument("-e","--externalqos", action='store_true', help="configure qos outside mininet")
+    parser.add_argument("-q","--qos", action='store_true', help="configure qos outside mininet")
     group=parser.add_mutually_exclusive_group()
     group.add_argument("-s", "--sdn", action='store_true', help="enable SDN mode (the default)")
     group.add_argument("-n", "--normal", action='store_true', help="enable STP mode (not the default)")
@@ -296,7 +296,7 @@ if __name__ == '__main__':
     # kill any old mininet first
     os.system("mn -c > /dev/null 2>&1")    
     setLogLevel( 'info' )
-    topo = SquareTopo(args.externalqos)
+    topo = SquareTopo(args.qos)
     net = Mininet( topo=topo,
                    link=TCLink,
                    controller=None)
@@ -305,7 +305,7 @@ if __name__ == '__main__':
         net.addController( 'c0', controller=RemoteController, ip=args.controller, port=args.port )
 
     net.start()
-    topo.afterStartConfig(net,args.sdn,args.externalqos)
+    topo.afterStartConfig(net,args.sdn,args.qos)
     #print "*** Dumping host connections"
     #dumpNodeConnections(net.hosts)
     #print "*** Dumping switch connections"
@@ -317,9 +317,14 @@ if __name__ == '__main__':
         printSTP()
         print("*** done printing STP state")
         print("")
-    net.pingAll()
-    print("")
+    if args.qos == True:
+        print("*** Showing Queues in s1-eth2")
+        s1 = net.getNodeByName("s1")
+        s1.cmdPrint("tc -g class show dev s1-eth2")        
+    
     if args.tests == True :
+        net.pingAll()
+        print("")
         throughput_H1_H2(net)
         print("waiting 20s for the buffers to empty")
         time.sleep(20)
@@ -330,7 +335,7 @@ if __name__ == '__main__':
         print("waiting 20s for the buffers to empty")
         time.sleep(20)
         arp_and_ping_H4_H3(net)
-        time.sleep(2)
+        time.sleep(10)
         noarp_and_ping_H4_H3(net)
         
     CLI.do_test1 = test1
