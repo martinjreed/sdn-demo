@@ -1,6 +1,11 @@
 Various notes on installation and configuration
 ===============================================
 
+[Onos API](http://127.0.0.1:8181/onos/v1/docs/)
+
+[Onos Flow Rules REST API JSON](https://wiki.onosproject.org/display/ONOS/Flow+Rules)
+
+
 Useful ONOS information
 -----------------------
 

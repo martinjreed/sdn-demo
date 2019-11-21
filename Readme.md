@@ -34,12 +34,6 @@ Running mininet script:
 First make sure Onos is running as above then:
 
 ``` bash
-sudo ./bin/test-network.py --help
-usage: test-network.py [-h] [-s | -n]
 
-optional arguments:
-  -h, --help    show this help message and exit
-  -s, --sdn     enable SDN mode (the default)
-  -n, --normal  enable STP mode (not the default)
 ```
 
