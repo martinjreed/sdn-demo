@@ -2,7 +2,7 @@
 Version=1.0
 Name=Run Onos server
 Comment=Run Onos server
-Exec=lxterminal -t 'Onos server' -e 'cd onos;bazel run onos-local;$SHELL'
+Exec=lxterminal -t 'Onos server' -e 'cd onos;bazel run onos-local --fetch=false;$SHELL'
 Icon=utilities-terminal
 Terminal=true 
 Type=Application
