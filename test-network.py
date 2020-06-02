@@ -39,6 +39,7 @@ class SquareTopo(Topo):
         host4 = self.addHost("h4", mac='0a:00:00:00:00:04')
         host5 = self.addHost("h5", mac='0a:00:00:00:00:05')
 
+        # this is the default
         if qos == False:
             #note in the code HTB seems to be the default but does not work well
             # spent some time trying out these. In practice it may depend upon the TC values
@@ -105,7 +106,7 @@ class SquareTopo(Topo):
             s3.cmd("ovs-vsctl set Bridge s3 other_config:rstp-priority=28672")
             s1.cmd("ovs-vsctl set Bridge s1 rstp_enable=true")
             s2.cmd("ovs-vsctl set Bridge s2 rstp_enable=true")
-            
+        # not the default
         if qos == True:
             setTCcmd=os.path.dirname(os.path.realpath(__file__))+"/set-qos.sh"
             # get the list of interfaces that are between switches only (ie ignore lo and host interfaces)
