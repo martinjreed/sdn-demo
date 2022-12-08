@@ -1,0 +1,7 @@
+#!/bin/bash
+
+ONE=`echo -n "0A:00:00:00:00:01/-1" | jq -sRr @uri`
+TWO=`echo -n "0A:00:00:00:00:02/-1" | jq -sRr @uri`
+
+curl -s --user onos:rocks -X GET --header 'Accept: application/json' \
+     "http://127.0.0.1:8181/onos/v1/paths/${ONE}/${TWO}/disjoint"

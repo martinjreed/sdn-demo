@@ -15,7 +15,7 @@ from mininet.net import Mininet
 from mininet.node import CPULimitedHost, Controller, RemoteController, OVSSwitch
 from mininet.link import TCLink
 from mininet.util import dumpNodeConnections
-from mininet.log import setLogLevel, output
+from mininet.log import setLogLevel, output, info
 from mininet.cli import CLI
 from tempfile import mkstemp
 from subprocess import check_output, call
@@ -25,14 +25,15 @@ import os
 
 from sys import argv
 
+
 class SquareTopo(Topo):
     "Square switch topology with five hosts"
     def __init__(self, qos, **opts):
         Topo.__init__(self, **opts)
-        switch1 = self.addSwitch('s1', cls=OVSSwitch, failMode="standalone")
-        switch2 = self.addSwitch('s2', cls=OVSSwitch, failMode="standalone")
-        switch3 = self.addSwitch('s3', cls=OVSSwitch, failMode="standalone")
-        switch4 = self.addSwitch('s4', cls=OVSSwitch, failMode="standalone")
+        switch1 = self.addSwitch('s1', cls=OVSSwitch, failMode="standalone", protocols="OpenFlow13")
+        switch2 = self.addSwitch('s2', cls=OVSSwitch, failMode="standalone", protocols="OpenFlow13")
+        switch3 = self.addSwitch('s3', cls=OVSSwitch, failMode="standalone", protocols="OpenFlow13")
+        switch4 = self.addSwitch('s4', cls=OVSSwitch, failMode="standalone", protocols="OpenFlow13")
         host1 = self.addHost("h1", mac='0a:00:00:00:00:01')
         host2 = self.addHost("h2", mac='0a:00:00:00:00:02')
         host3 = self.addHost("h3", mac='0a:00:00:00:00:03')
@@ -121,16 +122,16 @@ class SquareTopo(Topo):
                         linkName = intf.name + ' ' + intfs[0].name
                         if (bool(re.search("^s.*s.*$", linkName))):
                             tcInterfaces = tcInterfaces + " " + intf.name
-            print("*** Setting qos externally using TC commands from " + setTCcmd)
-            print("    on interfaces " + tcInterfaces)
+            info("*** Setting qos externally using TC commands from " + setTCcmd +  "\n")
+            info("    on interfaces " + tcInterfaces +  "\n")
             cmd = setTCcmd + " " + tcInterfaces
             retVal = call(cmd, shell=True)
             if retVal != 0:
-                print("*** error setting qos")
+                info("*** error setting qos" +  "\n")
     
 def throughput_H1_H2(net):
-    print("*** test1 Testing Throughput between H1 and H2 (no background traffic)")
-    print("Please wait for 30 seconds")
+    info("*** test1 Testing Throughput between H1 and H2 (no background traffic)" +  "\n")
+    info("Please wait for 30 seconds" +  "\n")
     h1 = net.getNodeByName("h1")
     h2 = net.getNodeByName("h2")
     h3 = net.getNodeByName("h3")
@@ -139,22 +140,23 @@ def throughput_H1_H2(net):
     #h2.cmd("iperf -s -u &")
     h2.cmd("iperf -s &")
     time.sleep(4)
+    h2.cmd("ping 10.0.0.1 -c 2")
     # for udp
     #h1out = h1.cmd("iperf -c 10.0.0.2 -u -b 10M -t 30 -y c -x CDMS")
     h1out = h1.cmd("iperf -c 10.0.0.2 -t 30 -y c")
     h1out = h1out.split(",")
     if len(h1out) < 9:
-        print("*** Test Failed Error, length of reply only had " + str(len(h1out)) + " field(s)")
-        print("***      note that these tests might fail due to the fact the network is being overloaded")
-        print("***      you can run it again later from the command line as test1.")
+        info("*** Test Failed Error, length of reply only had " + str(len(h1out)) + " field(s)" +  "\n")
+        info("***      note that these tests might fail due to the fact the network is being overloaded" +  "\n")
+        info("***      you can run it again later from the command line as test1." +  "\n")
     else:
         tp=float(h1out[8])/1000000.0
-        print("*** Results Throughput=" +str(tp) + "Mb/s")
-    print("")
+        info("*** Results Throughput=" +str(tp) + "Mb/s" +  "\n")
+    info("" +  "\n")
 
 def throughput_H1_H2andH4_H3(net):
-    print("*** test2 Testing Throughput between H1 and H2 with background traffic between H4 and H3")
-    print("Please wait for 30 seconds")
+    info("*** test2 Testing Throughput between H1 and H2 with background traffic between H4 and H3" +  "\n")
+    info("Please wait for 30 seconds" +  "\n")
     h1 = net.getNodeByName("h1")
     h2 = net.getNodeByName("h2")
     h3 = net.getNodeByName("h3")
@@ -162,30 +164,32 @@ def throughput_H1_H2andH4_H3(net):
     h2.cmd("iperf -s &")
     h3.cmd("iperf -s &")
     time.sleep(1)
+    h2.cmd("ping 10.0.0.1 -c 2")
+    h4.cmd("ping 10.0.0.3 -c 2")
     h1mon = h1.sendCmd("iperf -c 10.0.0.2 -t 30 -y c")
     h4out = h4.cmd("iperf -c 10.0.0.3 -t 30 -y c")
     h4out = h4out.split(",")
     if len(h4out) < 9:
-        print("*** Test Failed Error, length of reply only had " + str(len(h4out)) + " field(s)")
-        print("***      note that these tests might fail due to the fact the network is being overloaded")
-        print("***      you can run it again later from the command line as test1.")
+        info("*** Test Failed Error, length of reply only had " + str(len(h4out)) + " field(s)" +  "\n")
+        info("***      note that these tests might fail due to the fact the network is being overloaded" +  "\n")
+        info("***      you can run it again later from the command line as test1." +  "\n")
     else:
         tp=float(h4out[8])/1000000.0
-        print("*** Results Throughput from H4=" +str(tp) + "Mb/s")
+        info("*** Results Throughput from H4=" +str(tp) + "Mb/s" +  "\n")
     h1out= h1.waitOutput()
     h1out = h1out.split(",")
     if len(h1out) < 9:
-        print("*** Test Failed Error, length of reply only had " + str(len(h1out)) + " field(s)")
-        print("***      note that these tests might fail due to the fact the network is being overloaded")
-        print("***      you can run it again later from the command line as test1.")
+        info("*** Test Failed Error, length of reply only had " + str(len(h1out)) + " field(s)" +  "\n")
+        info("***      note that these tests might fail due to the fact the network is being overloaded" +  "\n")
+        info("***      you can run it again later from the command line as test1." +  "\n")
     else:
         tp=float(h1out[8])/1000000.0
-        print("*** Results Throughput from H1=" +str(tp) + "Mb/s")
-    print("")
+        info("*** Results Throughput from H1=" +str(tp) + "Mb/s" +  "\n")
+    info("" +  "\n")
 
 def throughput_H1_H2andH5_H2(net):
-    print("*** test3 Testing Simultaneous Throughput H1 to H2 and H5 to H2")
-    print("Please wait for 30 seconds")
+    info("*** test3 Testing Simultaneous Throughput H1 to H2 and H5 to H2" +  "\n")
+    info("Please wait for 30 seconds" +  "\n")
     h1 = net.getNodeByName("h1")
     h2 = net.getNodeByName("h2")
     h3 = net.getNodeByName("h3")
@@ -193,51 +197,53 @@ def throughput_H1_H2andH5_H2(net):
     h5 = net.getNodeByName("h5")
     h2.cmd("iperf -s &")
     time.sleep(1)
+    h2.cmd("ping 10.0.0.1 -c 2")
+    h2.cmd("ping 10.0.0.5 -c 2")
     h1mon = h1.sendCmd("iperf -c 10.0.0.2 -t 30 -y c")
     h5out = h5.cmd("iperf -c 10.0.0.2 -t 30 -y c")
     h5out = h5out.split(",")
     if len(h5out) < 9:
-        print("*** Test Failed Error, length of reply only had " + str(len(h1out)) + " field(s)")
-        print("***      note that these tests might fail due to the fact the network is being overloaded")
-        print("***      you can run it again later from the command line as test1.")
+        info("*** Test Failed Error, length of reply only had " + str(len(h1out)) + " field(s)" +  "\n")
+        info("***      note that these tests might fail due to the fact the network is being overloaded" +  "\n")
+        info("***      you can run it again later from the command line as test1." +  "\n")
     else:
         tp=float(h5out[8])/1000000.0
-        print("*** Results Throughput from H5=" +str(tp) + "Mb/s")
+        info("*** Results Throughput from H5=" +str(tp) + "Mb/s" +  "\n")
 
     h1out= h1.waitOutput()
     h1out = h1out.split(",")
     if len(h1out) < 9:
-        print("*** Test Failed Error, length of reply only had " + str(len(h1out)) + " field(s)")
-        print("***      note that these tests might fail due to the fact the network is being overloaded")
-        print("***      you can run it again later from the command line as test1.")
+        info("*** Test Failed Error, length of reply only had " + str(len(h1out)) + " field(s)" +  "\n")
+        info("***      note that these tests might fail due to the fact the network is being overloaded" +  "\n")
+        info("***      you can run it again later from the command line as test1." +  "\n")
     else:
         tp=float(h1out[8])/1000000.0
-        print("*** Results Throughput from H1=" +str(tp) + "Mb/s")
-    print("")
+        info("*** Results Throughput from H1=" +str(tp) + "Mb/s" +  "\n")
+    info("" +  "\n")
 
 def arp_and_ping_H4_H3(net):
-    print("*** test4 Ping h4 to h3 10 times (including arp at beginning)")
+    info("*** test4 Ping h4 to h3 10 times (including arp at beginning)" +  "\n")
     if net.argsSdn == True:
-        print("    waiting 10s for any old flow rules to flush out")
+        info("    waiting 10s for any old flow rules to flush out" +  "\n")
         # I lied, lets wait 12 seconds just in case
         time.sleep(15)
     h4 = net.getNodeByName("h4")
     h3 = net.getNodeByName("h3")
     h4.cmd("arp -d 10.0.0.3")
     h3.cmd("arp -d 10.0.0.4")
-    h4.cmdPrint("ping -c 10 10.0.0.3")
-    print("")
+    h4.cmdPrint("ping -c 10 10.0.0.3" +  "\n")
+    info("" +  "\n")
 
 def noarp_and_ping_H4_H3(net):
     h4 = net.getNodeByName("h4")
     h4out=h4.cmd("ping -c 1 10.0.0.3")
-    print("*** test5 Ping h4 to h3 10 times (no arp at beginning)")
+    info("*** test5 Ping h4 to h3 10 times (no arp at beginning)" +  "\n")
     if net.argsSdn == True:
-        print("    waiting 10s for any old flow rules to flush out")
+        info("    waiting 10s for any old flow rules to flush out" +  "\n")
         # I lied, lets wait 12 seconds just in case
         time.sleep(15)
-    h4.cmdPrint("ping -c 10 10.0.0.3")
-    print("")
+    h4.cmdPrint("ping -c 10 10.0.0.3" +  "\n")
+    info("" +  "\n")
 
 
 #Wrappers needed for command line
@@ -264,15 +270,15 @@ def test5(self,line):
     
 def printSTP():
     # get the list of ports, this is nasty, but works
-    ports=check_output('sudo ovs-vsctl list port | grep name | grep "-" | sed "s/.*name.*: \\"\(.*\)\\"$/\\1/" | sort',shell=True)
+    ports=check_output('sudo ovs-vsctl list port | grep name | grep "-" | awk "{print \$3}" | sort',shell=True).decode('utf-8')
     # for each port
     for i in ports.splitlines():
-        reply=check_output("/usr/bin/ovs-vsctl list port " + i,shell=True)
+        reply=check_output("/usr/bin/ovs-vsctl list port " + i,shell=True).decode('utf-8')
         reply=reply.replace("\n"," ")
         # again nasty
-        filtered = re.sub(r'.*name[^"]+"([^"]+)".*rstp_port_role(.*),.*$',r'\1\2',reply)
-        print(filtered)
-    print("")
+        filtered = re.sub(r'.*rstp_port_role(.*),.*$',r'\1',reply)
+        info(i + filtered + "\n")
+    info("")
 
     
 
@@ -290,9 +296,9 @@ if __name__ == '__main__':
     if args.normal == False:
         args.sdn = True
     if args.sdn == True:
-        print("Running in SDN mode")
+        info("Running in SDN mode" + "\n" +  "\n")
     else:
-        print("Running in STP mode")
+        info("Running in STP mode" +  "\n")
         
     # kill any old mininet first
     os.system("mn -c > /dev/null 2>&1")    
@@ -311,29 +317,29 @@ if __name__ == '__main__':
     #dumpNodeConnections(net.hosts)
     #print "*** Dumping switch connections"
     #dumpNodeConnections(net.switches)
-    print("Waiting for startup and network to settle (please wait 5 seconds)")
+    info("Waiting for startup and network to settle (please wait 5 seconds)" +  "\n")
     time.sleep(5)
     if args.sdn == False:
-        print("*** STP state of the switches")
+        info("*** STP state of the switches" +  "\n")
         printSTP()
-        print("*** done printing STP state")
-        print("")
+        info("*** done printing STP state" +  "\n")
+        info("" +  "\n")
     if args.qos == True:
-        print("*** Showing Queues in s1-eth2")
+        info("*** Showing Queues in s1-eth2" +  "\n")
         s1 = net.getNodeByName("s1")
         s1.cmdPrint("tc -g class show dev s1-eth2")        
     
     if args.tests == True :
         net.pingAll()
-        print("")
+        info("" +  "\n")
         throughput_H1_H2(net)
-        print("waiting 20s for the buffers to empty")
+        info("waiting 20s for the buffers to empty" +  "\n")
         time.sleep(20)
         throughput_H1_H2andH4_H3(net)
-        print("waiting 20s for the buffers to empty")
+        info("waiting 20s for the buffers to empty" +  "\n")
         time.sleep(20)
         throughput_H1_H2andH5_H2(net)
-        print("waiting 20s for the buffers to empty")
+        info("waiting 20s for the buffers to empty" +  "\n")
         time.sleep(20)
         arp_and_ping_H4_H3(net)
         time.sleep(10)
@@ -344,7 +350,7 @@ if __name__ == '__main__':
     CLI.do_test3 = test3
     CLI.do_test4 = test4
     CLI.do_test5 = test5
-    print("enter \"quit\" to exit or issue mininet commands if you know them")
-    print("you can run the tests using the commands \"test1\" or \"test2\" ....")
+    info("enter \"quit\" to exit or issue mininet commands if you know them" +  "\n")
+    info("you can run the tests using the commands \"test1\" or \"test2\" ...." +  "\n")
     CLI(net)
     net.stop()

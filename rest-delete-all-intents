@@ -1,0 +1,9 @@
+#!/bin/bash
+
+INTENTS=`curl -s --user onos:rocks -X GET http://127.0.0.1:8181/onos/v1/intents | json intents | json -a key`
+APPID=`curl -s --user onos:rocks -X GET http://127.0.0.1:8181/onos/v1/intents | json intents | json -a appId | tail -n 1`
+for intent in $INTENTS
+do
+echo "Deleting Intent $intent"
+curl -s --user onos:rocks -X DELETE http://127.0.0.1:8181/onos/v1/intents/${APPID}/${intent}
+done

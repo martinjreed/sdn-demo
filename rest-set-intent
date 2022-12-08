@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# this strange looking function uses a "here" script, a bash feature
+# to take content from "EOF" until "EOF" and return it. It means
+# we do not need to worry about escaping quotes, then we can use it later
+generate_post_data()
+{
+  cat <<EOF
+{
+  "type": "HostToHostIntent",
+  "appId": "org.onosproject.ovsdb",
+  "priority": 55,
+  "one": "0A:00:00:00:00:01/-1",
+  "two": "0A:00:00:00:00:02/-1"
+}
+EOF
+}
+
+
+curl -s --user onos:rocks -X POST http://127.0.0.1:8181/onos/v1/intents -H 'Content-Type: application/json' \
+-d "$(generate_post_data)"
+

@@ -1,0 +1,14 @@
+#!/bin/bash
+usage () {
+      echo "Usage:"
+      echo "show-flows-in-switch i"
+      echo "    where i is a switch number (1, 2, 3, or 4)"
+}
+
+if [ "$#" -ne 1 ]
+then
+  usage
+  exit 1
+fi
+
+sudo ovs-ofctl -O OpenFlow13 dump-flows s${1}

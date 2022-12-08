@@ -1,0 +1,2 @@
+#!/bin/bash
+curl -s --user onos:rocks -X GET http://127.0.0.1:8181/onos/v1/flows | json_pp

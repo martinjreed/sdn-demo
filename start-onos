@@ -1,0 +1,4 @@
+#!/bin/bash
+cd
+cd onos
+bazel run onos-local
