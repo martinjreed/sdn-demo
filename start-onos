@@ -1,4 +1,5 @@
 #!/bin/bash
 cd
 cd onos
-bazel run onos-local
+#bazel run onos-local
+./bazel-out/k8-fastbuild/bin/onos-runner_current-jdk

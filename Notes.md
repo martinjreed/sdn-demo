@@ -5,6 +5,12 @@ Various notes on installation and configuration
 
 [Onos Flow Rules REST API JSON](https://wiki.onosproject.org/display/ONOS/Flow+Rules)
 
+Build on arm64
+--------------
+```bash
+bazel run onos-local --sandbox_debug --action_env=DISPLAY=:0 --action_env=QT_QPA_PLATFORM='offscreen'
+```
+
 Output from STP example
 -----------------------
 ```
