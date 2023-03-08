@@ -28,6 +28,10 @@ ssh -q -p 8101 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null onos@
 onos@root > app activate org.onosproject.openflow
 onos@root > app activate org.onosproject.fwd
 # disconnect from onos command line with Ctrl-D
+# note some scripts use json installed using:
+# https://github.com/trentm/json
+sudo apt install nodejs npm
+sudo npm install -g json
 ```
 Running mininet script:
 --------
