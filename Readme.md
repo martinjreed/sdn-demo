@@ -9,16 +9,18 @@ sudo apt install net-tools
 sudo apt-get install openssh-server
 sudo apt install git
 
-cd Downloads
-wget https://github.com/bazelbuild/bazel/releases/download/1.1.0/bazel-1.1.0-installer-linux-x86_64.sh
-chmod 755 bazel-1.1.0-installer-linux-x86_64.sh 
-./bazel-1.1.0-installer-linux-x86_64.sh --user
+# Install bazel https://bazel.build/install/ubuntu preferably using baselisk https://github.com/bazelbuild/bazelisk
+
+wget https://github.com/bazelbuild/bazelisk/releases/download/v1.18.0/bazelisk-linux-amd64
+sudo mv bazelisk-linux-amd64 /usr/local/bin/bazel
+sudo chmod 755 /usr/loca/bin/bazel
+
 # vital onos is in ~/onos !!!!!
 cd
 git clone https://gerrit.onosproject.org/onos
 cd onos
 # makes sure you are on a stable branch, this was the one when I did it
-git checkout --track origin/onos-2.2
+git checkout --track origin/onos-2.7.0
 # build it
 bazel build onos
 # run it
@@ -35,9 +37,5 @@ sudo npm install -g json
 ```
 Running mininet script:
 --------
-First make sure Onos is running as above then:
-
-``` bash
-
-```
+See the SDN Tutorial.doc for how to run the tutorial and demonstration
 
