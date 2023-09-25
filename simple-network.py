@@ -17,10 +17,10 @@ class SquareTopo(Topo):
     "Square switch topology with five hosts"
     def __init__(self, **opts):
         Topo.__init__(self, **opts)
-        switch1 = self.addSwitch('s1', cls=OVSSwitch, failMode="standalone")
-        switch2 = self.addSwitch('s2', cls=OVSSwitch, failMode="standalone")
-        switch3 = self.addSwitch('s3', cls=OVSSwitch, failMode="standalone")
-        switch4 = self.addSwitch('s4', cls=OVSSwitch, failMode="standalone")
+        switch1 = self.addSwitch('s1', cls=OVSSwitch, failMode="standalone", protocols="OpenFlow13")
+        switch2 = self.addSwitch('s2', cls=OVSSwitch, failMode="standalone", protocols="OpenFlow13")
+        switch3 = self.addSwitch('s3', cls=OVSSwitch, failMode="standalone", protocols="OpenFlow13")
+        switch4 = self.addSwitch('s4', cls=OVSSwitch, failMode="standalone", protocols="OpenFlow13")
         host1 = self.addHost("h1", mac='0a:00:00:00:00:01')
         host2 = self.addHost("h2", mac='0a:00:00:00:00:02')
         host3 = self.addHost("h3", mac='0a:00:00:00:00:03')
