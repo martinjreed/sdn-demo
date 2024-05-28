@@ -1,2 +1,2 @@
 #!/bin/bash
-ssh -q -p 8101 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null onos@127.0.0.1
+ssh -q -p 8101 -oHostKeyAlgorithms=+ssh-rsa -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null onos@127.0.0.1
